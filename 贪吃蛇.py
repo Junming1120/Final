@@ -3,64 +3,65 @@ import random
 import time
 import threading
 
-# 初始化变量
-snake = [(5, 10), (5, 9), (5, 8)]  # 初始化蛇的位置，初始长度为3
-direction = "RIGHT"  # 初始方向为向右
-food = (10, 20)  # 初始食物位置
-score = 0  # 初始得分
-game_over = False  # 游戏结束标志
+# Initialize variables
+snake = [(5, 10), (5, 9), (5, 8)]  # Initialize the position of the snake with an initial length of 3
+direction = "RIGHT"  # The initial direction is to the right
+food = (10, 20)  # Initial food location
+score = 0  # Initial score
+game_over = False  # Game over sign
 
-# 打印游戏界面
+# Print the game interface
 def print_game():
     global game_over
-    os.system("cls" if os.name == "nt" else "clear")  # 清屏，兼容Windows和Unix
-    for y in range(20):  # 遍历行
-        for x in range(40):  # 遍历列
-            if (y, x) in snake:  # 如果蛇在当前位置
-                print("O", end="")  # 打印蛇的身体
-            elif (y, x) == food:  # 如果食物在当前位置
-                print("X", end="")  # 打印食物
+    os.system("cls" if os.name == "nt" else "clear")  ## Clear screen, Windows and Unix compatible
+    for y in range(20):  
+  
+        for x in range(40):  
+            if (y, x) in snake:  # If the snake is in its current position
+                print("O", end="")  # Print the body of a snake
+            elif (y, x) == food:  # If the food is in the current location
+                print("X", end="")  # Printing food
             else:
-                print(" ", end="")  # 打印空格
-        print()  # 换行
-    print(f"Score: {score}")  # 打印当前得分
-    if game_over:  # 如果游戏结束
-        print("Game Over!")  # 打印游戏结束信息
+                print(" ", end="")  # Print spaces
+        print()  
+    print(f"Score: {score}")  
+    if game_over:  
+        print("Game Over!") 
 
-# 更新蛇的位置
+# Update the snake's position
 def update_snake():
     global game_over, score, food
-    head = snake[0]  # 获取蛇头位置
+    head = snake[0]  
     if direction == "UP":
-        new_head = (head[0] - 1, head[1])  # 向上移动
+        new_head = (head[0] - 1, head[1])  # up
     elif direction == "DOWN":
-        new_head = (head[0] + 1, head[1])  # 向下移动
+        new_head = (head[0] + 1, head[1])  # down
     elif direction == "LEFT":
-        new_head = (head[0], head[1] - 1)  # 向左移动
+        new_head = (head[0], head[1] - 1)  # left
     elif direction == "RIGHT":
-        new_head = (head[0], head[1] + 1)  # 向右移动
+        new_head = (head[0], head[1] + 1)  # right
 
-    # 检查游戏结束条件
-    if (new_head in snake or  # 撞到自己
-        new_head[0] < 0 or new_head[0] >= 20 or  # 撞到上下墙
-        new_head[1] < 0 or new_head[1] >= 40):  # 撞到左右墙
-        game_over = True  # 游戏结束
+   
+    if (new_head in snake or  # Run yourself down 
+        new_head[0] < 0 or new_head[0] >= 20 or  # Hit the up and down wall
+        new_head[1] < 0 or new_head[1] >= 40):  # left right
+        game_over = True  # game over
         return
 
-    snake.insert(0, new_head)  # 在蛇头位置插入新头
-    if new_head == food:  # 如果吃到食物
-        score += 1  # 得分加1
-        food = (random.randint(0, 19), random.randint(0, 39))  # 随机生成新食物
+    snake.insert(0, new_head)  # Insertion of a new head in the position of the snake's head
+    if new_head == food:  # if get food
+        score += 1  
+        food = (random.randint(0, 19), random.randint(0, 39))  # random food
     else:
-        snake.pop()  # 否则移除蛇尾，保持长度不变
+        snake.pop() 
 
-# 获取用户输入
+
 def get_input():
     global direction
-    while not game_over:  # 游戏未结束
-        key = input()  # 获取用户输入
-        if key in ["w", "a", "s", "d"]:  # 如果输入合法
-            if key == "w" and direction != "DOWN":  # 避免反向移动
+    while not game_over:  
+        key = input() 
+        if key in ["w", "a", "s", "d"]: 
+            if key == "w" and direction != "DOWN":  #Avoid reverse movement
                 direction = "UP"
             elif key == "s" and direction != "UP":
                 direction = "DOWN"
@@ -69,19 +70,19 @@ def get_input():
             elif key == "d" and direction != "LEFT":
                 direction = "RIGHT"
 
-# 主游戏循环
+
 def main():
-    input_thread = threading.Thread(target=get_input)  # 创建线程获取用户输入
-    input_thread.start()  # 启动线程
+    input_thread = threading.Thread(target=get_input)  
+    input_thread.start()  # star
 
-    while not game_over:  # 游戏未结束
-        update_snake()  # 更新蛇的位置
-        print_game()  # 打印游戏界面
-        time.sleep(0.3)  # 控制游戏速度
+    while not game_over:   
+        update_snake()  
+        print_game()  
+        time.sleep(0.3)  # speed of the game
 
-    print_game()  # 最后打印一次游戏界面
-    input_thread.join()  # 等待输入线程结束
+    print_game()  
+    input_thread.join() 
 
 if __name__ == "__main__":
-    main()  # 运行主程序
+    main()  
 
